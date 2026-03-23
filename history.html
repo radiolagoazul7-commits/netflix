@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Visualização - NetFlix</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .history-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .history-header {
+            margin-bottom: 40px;
+        }
+
+        .history-header h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .history-header p {
+            color: #b3b3b3;
+            font-size: 16px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #e50914;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .view-toggle {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .toggle-btn {
+            padding: 8px 16px;
+            background: #1a1a2e;
+            border: 1px solid #404040;
+            color: #b3b3b3;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+
+        .toggle-btn.active {
+            background: #e50914;
+            color: white;
+            border-color: #e50914;
+        }
+
+        .toggle-btn:hover {
+            border-color: #e50914;
+        }
+
+        /* Grid View */
+        .history-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .history-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 2/3;
+            background: #1a1a2e;
+            border: 1px solid #404040;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .history-item:hover {
+            border-color: #e50914;
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(229, 9, 20, 0.4);
+        }
+
+        .history-item-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .progress-bar-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 5;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: #e50914;
+        }
+
+        .history-item-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 15px;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .history-item:hover .history-item-overlay {
+            opacity: 1;
+        }
+
+        .history-item-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .history-item-date {
+            font-size: 12px;
+            color: #b3b3b3;
+            margin-bottom: 8px;
+        }
+
+        .history-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            background: rgba(229, 9, 20, 0.8);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #e50914;
+        }
+
+        .action-btn.remove {
+            background: rgba(255, 107, 107, 0.8);
+        }
+
+        .action-btn.remove:hover {
+            background: #ff6b6b;
+        }
+
+        /* List View */
+        .history-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .history-row {
+            display: grid;
+            grid-template-columns: 80px 1fr auto auto;
+            gap: 20px;
+            align-items: center;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f0f 100%);
+            border-radius: 8px;
+            border: 1px solid #404040;
+            transition: all 0.3s;
+        }
+
+        .history-row:hover {
+            border-color: #e50914;
+            background: linear-gradient(135deg, #2a2a3e 0%, #1f1f1f 100%);
+        }
+
+        .history-row-image {
+            width: 80px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        .history-row-info h3 {
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .history-row-info p {
+            font-size: 12px;
+            color: #b3b3b3;
+        }
+
+        .history-row-date {
+            font-size: 12px;
+            color: #6b6b6b;
+            min-width: 100px;
+        }
+
+        .history-row-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            background: rgba(229, 9, 20, 0.2);
+            border: 1px solid #e50914;
+            color: #e50914;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .icon-btn:hover {
+            background: #e50914;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            color: #404040;
+            margin-bottom: 20px;
+        }
+
+        .empty-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #b3b3b3;
+        }
+
+        .empty-description {
+            color: #6b6b6b;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #e50914;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #c40812;
+            transform: translateY(-2px);
+        }
+
+        .section-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f0f 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #404040;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #e50914;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #b3b3b3;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 768px) {
+            .history-container {
+                padding: 0 15px;
+            }
+
+            .history-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 15px;
+            }
+
+            .history-row {
+                grid-template-columns: 60px 1fr;
+                gap: 15px;
+            }
+
+            .history-row-date,
+            .history-row-actions {
+                grid-column: 2;
+                display: flex;
+                justify-content: space-between;
+                font-size: 12px;
+            }
+
+            .history-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header / Navbar -->
+    <header class="header">
+        <div class="navbar">
+            <a href="index.html" class="logo" style="text-decoration: none;">
+                <i class="fas fa-play"></i> NetFlix
+            </a>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Início</a>
+                <a href="history.html" class="nav-link active">Histórico</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="history-container">
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+
+            <div class="history-header">
+                <h1><i class="fas fa-clock"></i> Histórico de Visualização</h1>
+                <p>Filmes e séries que você já assistiu</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="section-stats" id="statsContainer">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalWatched">0</div>
+                    <div class="stat-label">Filmes Assistidos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalHours">0h</div>
+                    <div class="stat-label">Horas Assistidas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="lastYear">0</div>
+                    <div class="stat-label">Este Ano</div>
+                </div>
+            </div>
+
+            <!-- View Toggle -->
+            <div class="view-toggle">
+                <button class="toggle-btn active" onclick="switchView('grid')">
+                    <i class="fas fa-th"></i> Grade
+                </button>
+                <button class="toggle-btn" onclick="switchView('list')">
+                    <i class="fas fa-list"></i> Lista
+                </button>
+            </div>
+
+            <!-- History Content -->
+            <div id="historyContent">
+                <div id="historyGrid" class="history-grid"></div>
+                <div id="historyList" class="history-list" style="display: none;"></div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" style="display: none;">
+                <div class="empty-state">
+                    <div class="empty-icon">🎬</div>
+                    <h2 class="empty-title">Seu histórico está vazio</h2>
+                    <p class="empty-description">Comece a assistir para construir seu histórico</p>
+                    <a href="index.html" class="btn">
+                        <i class="fas fa-search"></i> Descobrir Conteúdo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.org/npm/hls.js@latest"></script>
+    <script>
+        let currentUser = null;
+        let currentView = 'grid';
+
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            if (!isLoggedIn || !currentUser) {
+                window.location.href = 'auth.html';
+                return false;
+            }
+            return true;
+        }
+
+        function switchView(view) {
+            currentView = view;
+            
+            // Atualizar botões
+            document.querySelectorAll('.toggle-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.toggle-btn').classList.add('active');
+
+            // Alternar visualização
+            document.getElementById('historyGrid').style.display = view === 'grid' ? 'grid' : 'none';
+            document.getElementById('historyList').style.display = view === 'list' ? 'flex' : 'none';
+        }
+
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Data desconhecida';
+            const date = new Date(timestamp);
+            return date.toLocaleDateString('pt-BR');
+        }
+
+        function formatTime(minutes) {
+            const hours = Math.floor(minutes / 60);
+            const mins = minutes % 60;
+            return hours > 0 ? `${hours}h ${mins}m` : `${mins}m`;
+        }
+
+        function loadHistory() {
+            if (!checkAuth()) return;
+
+            const moviesData = JSON.parse(localStorage.getItem('adminMovies')) || [];
+            const watchedMovies = currentUser.watchedMovies || [];
+
+            // Calcular estatísticas
+            const totalHours = watchedMovies.length * 1.5;
+            const thisYear = watchedMovies.filter(w => {
+                const date = new Date(w.watchedDate || 0);
+                return date.getFullYear() === new Date().getFullYear();
+            }).length;
+
+            document.getElementById('totalWatched').textContent = watchedMovies.length;
+            document.getElementById('totalHours').textContent = totalHours.toFixed(1) + 'h';
+            document.getElementById('lastYear').textContent = thisYear;
+
+            if (watchedMovies.length === 0) {
+                document.getElementById('historyContent').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+                return;
+            }
+
+            // Dados combinados
+            const historyItems = watchedMovies.map(watched => {
+                const movie = moviesData.find(m => m.id === watched.movieId);
+                return {
+                    ...movie,
+                    watchedDate: watched.watchedDate,
+                    progress: watched.progress || 0
+                };
+            }).sort((a, b) => new Date(b.watchedDate) - new Date(a.watchedDate));
+
+            // Renderizar grade
+            const grid = document.getElementById('historyGrid');
+            grid.innerHTML = historyItems.map(item => {
+                const progressPercent = item.progress || 0;
+                return `
+                    <div class="history-item">
+                        <img src="${item.image}" alt="${item.title}" class="history-item-image" onerror="this.src='https://via.placeholder.com/180x270?text=No+Image'">
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" style="width: ${progressPercent}%"></div>
+                        </div>
+                        <div class="history-item-overlay">
+                            <div class="history-item-title">${item.title}</div>
+                            <div class="history-item-date">
+                                <i class="fas fa-calendar"></i> ${formatDate(item.watchedDate)}
+                            </div>
+                            <div class="history-item-actions">
+                                <button class="action-btn" onclick="playMovie(${item.id})">
+                                    <i class="fas fa-play"></i> Continuar
+                                </button>
+                                <button class="action-btn remove" onclick="removeFromHistory(${item.id})">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Renderizar lista
+            const list = document.getElementById('historyList');
+            list.innerHTML = historyItems.map(item => {
+                const progressPercent = item.progress || 0;
+                return `
+                    <div class="history-row">
+                        <img src="${item.image}" alt="${item.title}" class="history-row-image" onerror="this.src='https://via.placeholder.com/80x120?text=No+Image'">
+                        <div class="history-row-info">
+                            <h3>${item.title}</h3>
+                            <p>Progresso: ${progressPercent}%</p>
+                        </div>
+                        <div class="history-row-date">
+                            ${formatDate(item.watchedDate)}
+                        </div>
+                        <div class="history-row-actions">
+                            <button class="icon-btn" onclick="playMovie(${item.id})" title="Continuar assistindo">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="icon-btn" onclick="removeFromHistory(${item.id})" title="Remover do histórico">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function playMovie(movieId) {
+            const moviesData = JSON.parse(localStorage.getItem('adminMovies')) || [];
+            const movie = moviesData.find(m => m.id === movieId);
+            
+            if (!movie || !movie.video) {
+                alert('Vídeo não disponível!');
+                return;
+            }
+
+            // Redirecionar para página principal para reprodução
+            sessionStorage.setItem('playMovieId', movieId);
+            window.location.href = 'index.html';
+        }
+
+        function removeFromHistory(movieId) {
+            if (confirm('Remover do histórico?')) {
+                currentUser.watchedMovies = (currentUser.watchedMovies || []).filter(w => w.movieId !== movieId);
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+                loadHistory();
+            }
+        }
+
+        // ===== SINCRONIZAÇÃO EM TEMPO REAL =====
+        let lastHistoryHash = null;
+
+        function getHistoryHash() {
+            return JSON.stringify(JSON.parse(localStorage.getItem('adminMovies')) || []);
+        }
+
+        function syncHistory() {
+            const currentHash = getHistoryHash();
+            
+            if (lastHistoryHash === null) {
+                lastHistoryHash = currentHash;
+                return;
+            }
+            
+            if (currentHash !== lastHistoryHash) {
+                console.log('📡 Filmes atualizados! Sincronizando histórico...');
+                lastHistoryHash = currentHash;
+                loadHistory();
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAuth()) {
+                loadHistory();
+                lastHistoryHash = getHistoryHash();
+                
+                // Detectar mudanças do localStorage
+                window.addEventListener('storage', (e) => {
+                    if (e.key === 'adminMovies') {
+                        syncHistory();
+                    }
+                });
+                
+                // Polling a cada 2 segundos
+                setInterval(syncHistory, 2000);
+                console.log('✅ Histórico sincronizando em tempo real!');
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minha Lista - NetFlix</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .watchlist-container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .watchlist-header {
+            margin-bottom: 40px;
+        }
+
+        .watchlist-header h1 {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .watchlist-header p {
+            color: #b3b3b3;
+            font-size: 16px;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 20px;
+            color: #e50914;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .watchlist-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .watchlist-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+            aspect-ratio: 2/3;
+            background: #1a1a2e;
+            border: 1px solid #404040;
+            transition: all 0.3s;
+            cursor: pointer;
+        }
+
+        .watchlist-item:hover {
+            border-color: #e50914;
+            transform: scale(1.05);
+            box-shadow: 0 8px 16px rgba(229, 9, 20, 0.4);
+        }
+
+        .watchlist-item-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .watchlist-item-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding: 15px;
+            opacity: 0;
+            transition: all 0.3s;
+        }
+
+        .watchlist-item:hover .watchlist-item-overlay {
+            opacity: 1;
+        }
+
+        .watchlist-item-title {
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .watchlist-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 8px;
+            background: rgba(229, 9, 20, 0.8);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s;
+        }
+
+        .action-btn:hover {
+            background: #e50914;
+        }
+
+        .action-btn.remove {
+            background: rgba(255, 107, 107, 0.8);
+        }
+
+        .action-btn.remove:hover {
+            background: #ff6b6b;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .empty-icon {
+            font-size: 80px;
+            color: #404040;
+            margin-bottom: 20px;
+        }
+
+        .empty-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #b3b3b3;
+        }
+
+        .empty-description {
+            color: #6b6b6b;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #e50914;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn:hover {
+            background: #c40812;
+            transform: translateY(-2px);
+        }
+
+        .section-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f0f 100%);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #404040;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #e50914;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            color: #b3b3b3;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        @media (max-width: 768px) {
+            .watchlist-container {
+                padding: 0 15px;
+            }
+
+            .watchlist-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 15px;
+            }
+
+            .watchlist-header h1 {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header / Navbar -->
+    <header class="header">
+        <div class="navbar">
+            <a href="index.html" class="logo" style="text-decoration: none;">
+                <i class="fas fa-play"></i> NetFlix
+            </a>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Início</a>
+                <a href="watchlist.html" class="nav-link active">Minha Lista</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="watchlist-container">
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+
+            <div class="watchlist-header">
+                <h1><i class="fas fa-bookmark"></i> Minha Lista</h1>
+                <p>Filmes e séries que você salvou para assistir depois</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="section-stats" id="statsContainer">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalWatchlist">0</div>
+                    <div class="stat-label">Itens na Lista</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="hoursApprox">0h</div>
+                    <div class="stat-label">Tempo Total</div>
+                </div>
+            </div>
+
+            <!-- Watchlist Grid -->
+            <div id="watchlistContent">
+                <div class="watchlist-grid" id="watchlistGrid">
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div id="emptyState" style="display: none;">
+                <div class="empty-state">
+                    <div class="empty-icon">📚</div>
+                    <h2 class="empty-title">Sua lista está vazia</h2>
+                    <p class="empty-description">Adicione filmes e séries à sua lista para assistir depois</p>
+                    <a href="index.html" class="btn">
+                        <i class="fas fa-search"></i> Descobrir Conteúdo
+                    </a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        let currentUser = null;
+
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            if (!isLoggedIn || !currentUser) {
+                window.location.href = 'auth.html';
+                return false;
+            }
+            return true;
+        }
+
+        function loadWatchlist() {
+            if (!checkAuth()) return;
+
+            const moviesData = JSON.parse(localStorage.getItem('adminMovies')) || [];
+            const watchlist = currentUser.watchlist || [];
+
+            const watchlistMovies = moviesData.filter(m => watchlist.includes(m.id));
+
+            // Atualizar stats
+            const hoursApprox = watchlistMovies.length * 1.5;
+            document.getElementById('totalWatchlist').textContent = watchlistMovies.length;
+            document.getElementById('hoursApprox').textContent = hoursApprox.toFixed(1) + 'h';
+
+            if (watchlistMovies.length === 0) {
+                document.getElementById('watchlistContent').style.display = 'none';
+                document.getElementById('emptyState').style.display = 'block';
+                return;
+            }
+
+            // Renderizar grid
+            const grid = document.getElementById('watchlistGrid');
+            grid.innerHTML = watchlistMovies.map(movie => `
+                <div class="watchlist-item">
+                    <img src="${movie.image}" alt="${movie.title}" class="watchlist-item-image" onerror="this.src='https://via.placeholder.com/180x270?text=No+Image'">
+                    <div class="watchlist-item-overlay">
+                        <div class="watchlist-item-title">${movie.title}</div>
+                        <div class="watchlist-item-actions">
+                            <button class="action-btn" onclick="playMovie(${movie.id})">
+                                <i class="fas fa-play"></i> Ver
+                            </button>
+                            <button class="action-btn remove" onclick="removeFromWatchlist(${movie.id})">
+                                <i class="fas fa-trash"></i> Remover
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function playMovie(movieId) {
+            const moviesData = JSON.parse(localStorage.getItem('adminMovies')) || [];
+            const movie = moviesData.find(m => m.id === movieId);
+            
+            if (!movie || !movie.video) {
+                alert('Vídeo não disponível!');
+                return;
+            }
+
+            // Abrir em nova aba (implementar reprodutor similar ao index.html)
+            alert('Redirecionando para reprodução de: ' + movie.title);
+        }
+
+        function removeFromWatchlist(movieId) {
+            currentUser.watchlist = (currentUser.watchlist || []).filter(id => id !== movieId);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            loadWatchlist();
+        }
+
+        // ===== SINCRONIZAÇÃO EM TEMPO REAL =====
+        let lastWatchlistHash = null;
+
+        function getWatchlistHash() {
+            return JSON.stringify(JSON.parse(localStorage.getItem('adminMovies')) || []);
+        }
+
+        function syncWatchlist() {
+            const currentHash = getWatchlistHash();
+            
+            if (lastWatchlistHash === null) {
+                lastWatchlistHash = currentHash;
+                return;
+            }
+            
+            if (currentHash !== lastWatchlistHash) {
+                console.log('📡 Filmes atualizados! Sincronizando watchlist...');
+                lastWatchlistHash = currentHash;
+                loadWatchlist();
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            if (checkAuth()) {
+                loadWatchlist();
+                lastWatchlistHash = getWatchlistHash();
+                
+                // Detectar mudanças do localStorage
+                window.addEventListener('storage', (e) => {
+                    if (e.key === 'adminMovies') {
+                        syncWatchlist();
+                    }
+                });
+                
+                // Polling a cada 2 segundos
+                setInterval(syncWatchlist, 2000);
+                console.log('✅ Watchlist sincronizando em tempo real!');
+            }
+        });
+    </script>
+</body>
+</html>

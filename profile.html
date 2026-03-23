@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - NetFlix</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .profile-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 30px;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #1a1a2e 0%, #0f0f0f 100%);
+            padding: 40px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 40px;
+            border: 1px solid #404040;
+        }
+
+        .profile-avatar {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        .profile-name {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .profile-email {
+            color: #b3b3b3;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .profile-member-since {
+            color: #6b6b6b;
+            font-size: 13px;
+        }
+
+        .profile-section {
+            background: #1a1a2e;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border: 1px solid #404040;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #e50914;
+            display: inline-block;
+        }
+
+        .profile-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+
+        .info-item {
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            border: 1px solid #404040;
+        }
+
+        .info-label {
+            color: #b3b3b3;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-box {
+            text-align: center;
+            padding: 20px;
+            background: rgba(229, 9, 20, 0.1);
+            border-radius: 8px;
+            border: 1px solid #e50914;
+        }
+
+        .stat-number {
+            font-size: 28px;
+            font-weight: bold;
+            color: #e50914;
+        }
+
+        .stat-label {
+            color: #b3b3b3;
+            font-size: 12px;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: #e50914;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #c40812;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            border: 1px solid #404040;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .btn-danger {
+            background: rgba(255, 107, 107, 0.15);
+            color: #ff9999;
+            border: 1px solid #ff6b6b;
+        }
+
+        .btn-danger:hover {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .preferences {
+            margin-top: 20px;
+        }
+
+        .preference-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid #404040;
+        }
+
+        .preference-item:last-child {
+            border-bottom: none;
+        }
+
+        .toggle {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #404040;
+            transition: 0.3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .toggle-slider {
+            background-color: #e50914;
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 30px;
+            color: #e50914;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .back-link:hover {
+            gap: 5px;
+        }
+
+        @media (max-width: 768px) {
+            .profile-container {
+                padding: 0 15px;
+            }
+
+            .profile-header {
+                padding: 25px;
+            }
+
+            .profile-name {
+                font-size: 24px;
+            }
+
+            .profile-avatar {
+                font-size: 60px;
+                margin-bottom: 15px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header / Navbar -->
+    <header class="header">
+        <div class="navbar">
+            <a href="index.html" class="logo" style="text-decoration: none;">
+                <i class="fas fa-play"></i> NetFlix
+            </a>
+            <nav class="nav-links">
+                <a href="index.html" class="nav-link">Início</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="profile-container">
+            <a href="index.html" class="back-link">
+                <i class="fas fa-arrow-left"></i> Voltar
+            </a>
+
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar" id="profileAvatar">👤</div>
+                <h1 class="profile-name" id="profileName">Carregando...</h1>
+                <p class="profile-email" id="profileEmail">email@exemplo.com</p>
+                <p class="profile-member-since" id="profileMemberSince">Membro desde</p>
+            </div>
+
+            <!-- Stats -->
+            <div class="profile-section">
+                <h2 class="section-title">Seus Dados</h2>
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-number" id="movieCount">0</div>
+                        <div class="stat-label">Filmes Assistidos</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="watchlistCount">0</div>
+                        <div class="stat-label">Na Lista</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-number" id="hoursCount">0h</div>
+                        <div class="stat-label">Tempo Total</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preferences -->
+            <div class="profile-section">
+                <h2 class="section-title">Preferências</h2>
+                <div class="preferences">
+                    <div class="preference-item">
+                        <span>Notificações por Email</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="notificationToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                    <div class="preference-item">
+                        <span>Tema Escuro</span>
+                        <label class="toggle">
+                            <input type="checkbox" id="themeToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="profile-section">
+                <h2 class="section-title">Ações</h2>
+                <div class="btn-group">
+                    <button class="btn btn-secondary" onclick="editProfile()">
+                        <i class="fas fa-edit"></i> Editar Perfil
+                    </button>
+                    <button class="btn btn-secondary" onclick="changePassword()">
+                        <i class="fas fa-lock"></i> Mudar Senha
+                    </button>
+                    <button class="btn btn-danger" onclick="deleteAccount()">
+                        <i class="fas fa-trash"></i> Deletar Conta
+                    </button>
+                    <button class="btn btn-primary" onclick="logout()">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Verificar autenticação
+        function checkAuth() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+            if (!isLoggedIn || !currentUser) {
+                window.location.href = 'auth.html';
+                return null;
+            }
+            return currentUser;
+        }
+
+        function logout() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                const activities = JSON.parse(localStorage.getItem('appActivities')) || [];
+                activities.push({
+                    userId: currentUser.id,
+                    action: 'logout',
+                    description: `${currentUser.name} fez logout`,
+                    timestamp: new Date().toLocaleString('pt-BR')
+                });
+                localStorage.setItem('appActivities', JSON.stringify(activities));
+            }
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('currentUser');
+            localStorage.removeItem('rememberLogin');
+            window.location.href = 'auth.html';
+        }
+
+        function loadProfileData() {
+            const user = checkAuth();
+            if (!user) return;
+
+            // Carregar dados do perfil
+            document.getElementById('profileAvatar').textContent = user.avatar || '👤';
+            document.getElementById('profileName').textContent = user.name;
+            document.getElementById('profileEmail').textContent = user.email;
+            document.getElementById('profileMemberSince').textContent = `Membro desde ${user.createdAt}`;
+
+            // Carregar estatísticas
+            const watchedCount = (user.watchedMovies || []).length;
+            const watchlistCount = (user.watchlist || []).length;
+            const hoursWatched = watchedCount * 1.5; // Estimativa
+
+            document.getElementById('movieCount').textContent = watchedCount;
+            document.getElementById('watchlistCount').textContent = watchlistCount;
+            document.getElementById('hoursCount').textContent = hoursWatched.toFixed(1) + 'h';
+
+            // Carregar preferências
+            const prefs = user.preferences || {};
+            document.getElementById('notificationToggle').checked = prefs.notifications !== false;
+            document.getElementById('themeToggle').checked = prefs.theme === 'dark';
+        }
+
+        function editProfile() {
+            alert('Funcionalidade de edição em desenvolvimento!');
+        }
+
+        function changePassword() {
+            alert('Funcionalidade de mudança de senha em desenvolvimento!');
+        }
+
+        function deleteAccount() {
+            if (confirm('Tem certeza que deseja deletar sua conta? Esta ação é irreversível!')) {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                const users = JSON.parse(localStorage.getItem('appUsers')) || [];
+                
+                const updatedUsers = users.filter(u => u.id !== currentUser.id);
+                localStorage.setItem('appUsers', JSON.stringify(updatedUsers));
+
+                logout();
+            }
+        }
+
+        // Inicializar
+        document.addEventListener('DOMContentLoaded', () => {
+            loadProfileData();
+        });
+    </script>
+</body>
+</html>

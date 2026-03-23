@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NetFlix - Filmes e Séries Online</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <!-- Header / Navbar -->
+    <header class="header">
+        <div class="navbar">
+            <div class="logo">
+                <i class="fas fa-play"></i> NetFlix
+            </div>
+            <nav class="nav-links">
+                <a href="#" class="nav-link active">Início</a>
+                <a href="#" class="nav-link">Séries</a>
+                <a href="#" class="nav-link">Filmes</a>
+                <a href="#" class="nav-link">Novo e Popular</a>
+            </nav>
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input" placeholder="Buscar filmes, séries...">
+                <button class="search-btn"><i class="fas fa-search"></i></button>
+            </div>
+            <div class="user-menu">
+                <button class="user-btn" onclick="toggleUserMenu()"><i class="fas fa-user-circle"></i></button>
+                <div class="user-dropdown" id="userDropdown" style="display: none;">
+                    <a href="profile.html" class="dropdown-item">
+                        <i class="fas fa-user"></i> Meu Perfil
+                    </a>
+                    <a href="watchlist.html" class="dropdown-item">
+                        <i class="fas fa-bookmark"></i> Minha Lista
+                    </a>
+                    <a href="history.html" class="dropdown-item">
+                        <i class="fas fa-history"></i> Histórico
+                    </a>
+                    <hr style="margin: 10px 0; border: none; border-top: 1px solid rgba(255,255,255,0.1);">
+                    <button class="dropdown-item" onclick="logout()" style="width: 100%; text-align: left; background: none; border: none; cursor: pointer;">
+                        <i class="fas fa-sign-out-alt"></i> Sair
+                    </button>
+                </div>
+                <a href="admin-login.html" class="admin-link" title="Painel de Administração">
+                    <i class="fas fa-cog"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content" id="heroContent">
+            <h1>Carregando...</h1>
+        </div>
+        <div class="hero-overlay"></div>
+    </section>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Seção Trending -->
+        <section class="content-section">
+            <h2 class="section-title">Em Alta Agora</h2>
+            <div class="carousel" id="trendingCarousel">
+                <!-- Cards serão inseridos via JavaScript -->
+            </div>
+        </section>
+
+        <!-- Seção Originals -->
+        <section class="content-section">
+            <h2 class="section-title">Originais Netflix</h2>
+            <div class="carousel" id="originalsCarousel">
+                <!-- Cards serão inseridos via JavaScript -->
+            </div>
+        </section>
+
+        <!-- Seção Ação -->
+        <section class="content-section">
+            <h2 class="section-title">Ação</h2>
+            <div class="carousel" id="actionCarousel">
+                <!-- Cards serão inseridos via JavaScript -->
+            </div>
+        </section>
+
+        <!-- Seção Comédia -->
+        <section class="content-section">
+            <h2 class="section-title">Comédia</h2>
+            <div class="carousel" id="comedyCarousel">
+                <!-- Cards serão inseridos via JavaScript -->
+            </div>
+        </section>
+
+        <!-- Seção Drama -->
+        <section class="content-section">
+            <h2 class="section-title">Drama</h2>
+            <div class="carousel" id="dramaCarousel">
+                <!-- Cards serão inseridos via JavaScript -->
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de Detalhes -->
+    <div id="detailsModal" class="modal">
+        <div class="modal-content">
+            <button class="modal-close">&times;</button>
+            <div class="modal-body">
+                <img id="modalImage" src="" alt="" class="modal-image">
+                <div class="modal-info">
+                    <h1 id="modalTitle"></h1>
+                    <div class="modal-rating">
+                        <span id="modalYear"></span>
+                        <span id="modalRating"></span>
+                    </div>
+                    <p id="modalDescription"></p>
+                    <div class="modal-buttons">
+                        <button class="btn btn-primary" id="modalPlayBtn"><i class="fas fa-play"></i> Assistir</button>
+                        <button class="btn btn-secondary"><i class="fas fa-plus"></i> Minha Lista</button>
+                    </div>
+                    <div class="modal-details">
+                        <p><strong>Gênero:</strong> <span id="modalGenre"></span></p>
+                        <p><strong>Duração:</strong> <span id="modalDuration"></span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Sobre Nós</h4>
+                <ul>
+                    <li><a href="#">Empresa</a></li>
+                    <li><a href="#">Carreiras</a></li>
+                    <li><a href="#">Blog</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Ajuda</h4>
+                <ul>
+                    <li><a href="#">Central de Ajuda</a></li>
+                    <li><a href="#">Contato</a></li>
+                    <li><a href="#">FAQ</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Conta</h4>
+                <ul>
+                    <li><a href="#">Configurações</a></li>
+                    <li><a href="#">Privacidade</a></li>
+                    <li><a href="#">Logout</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Redes Sociais</h4>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 NetFlix Clone. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+    <script>
+        // Suporte a HLS/M3U8
+        document.addEventListener('DOMContentLoaded', () => {
+            const videoElement = document.getElementById('mainVideo');
+            if (videoElement && videoElement.src && videoElement.src.includes('.m3u8')) {
+                if (Hls.isSupported()) {
+                    const hls = new Hls();
+                    hls.loadSource(videoElement.src);
+                    hls.attachMedia(videoElement);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
